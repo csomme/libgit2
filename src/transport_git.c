@@ -447,7 +447,7 @@ static int store_pack(char **out, gitno_buffer *buf, git_repository *repo)
 	}
 
 	/* A bit dodgy, but we need to keep the pack at the temporary path */
-	error = git_filebuf_commit_at(&file, file.path_lock);
+	error = git_filebuf_commit_at(&file, file.path_lock, 0444);
 cleanup:
 	if (error < GIT_SUCCESS)
 		git_filebuf_cleanup(&file);

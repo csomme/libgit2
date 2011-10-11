@@ -849,7 +849,7 @@ static int packfile_check(struct pack_file **pack_out, const char *path)
 	strcpy(p->pack_name + path_len, ".pack");
 	if (p_stat(p->pack_name, &st) < GIT_SUCCESS || !S_ISREG(st.st_mode)) {
 		free(p);
-		return git__throw(GIT_ENOTFOUND, "Failed to check packfile. File not found");
+		return git__throw(GIT_EMISSINGPACKFILE, "Failed to check packfile. File not found");
 	}
 
 	/* ok, it looks sane as far as we can check without
@@ -885,7 +885,9 @@ static int packfile_load__cb(void *_data, char *path)
 	}
 
 	error = packfile_check(&pack, path);
-	if (error < GIT_SUCCESS)
+	if (error == GIT_EMISSINGPACKFILE)
+		return GIT_SUCCESS;
+	else if (error < GIT_SUCCESS)
 		return git__rethrow(error, "Failed to load packfile");
 
 	if (git_vector_insert(&backend->packs, pack) < GIT_SUCCESS) {

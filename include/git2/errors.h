@@ -131,6 +131,9 @@ typedef enum {
 
 	/**  The buffer is too short to satisfy the request */
 	GIT_ESHORTBUFFER = -32,
+
+	/** The specified pack has an index but no pack file */
+	GIT_EMISSINGPACKFILE = -33,
 } git_error;
 
 /**

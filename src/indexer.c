@@ -276,6 +276,7 @@ int git_indexer_write(git_indexer *idx)
 
 cleanup:
 	git_mwindow_free_all(&idx->pack->mwf);
+	git_mwindow_file_deregister(&idx->pack->mwf);
 	if (error < GIT_SUCCESS)
 		git_filebuf_cleanup(&idx->file);
 
@@ -389,6 +390,7 @@ void git_indexer_free(git_indexer *idx)
 		return;
 
 	p_close(idx->pack->mwf.fd);
+	git_mwindow_file_deregister(&idx->pack->mwf);
 	git_vector_foreach(&idx->objects, i, e)
 		git__free(e);
 	git_vector_free(&idx->objects);

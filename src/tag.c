@@ -133,17 +133,20 @@ static int parse_tag_buffer(git_tag *tag, const char *buffer, const char *buffer
 		}
 	}
 
-	if( *buffer != '\n' )
-		return git__throw(GIT_EOBJCORRUPTED, "Failed to parse tag. No new line before message");
+  tag->message = NULL;
+  if (buffer < buffer_end) {
+    if( *buffer != '\n' )
+      return git__throw(GIT_EOBJCORRUPTED, "Failed to parse tag. No new line before message");
 
-	text_len = buffer_end - ++buffer;
+    text_len = buffer_end - ++buffer;
 
-	tag->message = git__malloc(text_len + 1);
-	if (tag->message == NULL)
-		return GIT_ENOMEM;
+    tag->message = git__malloc(text_len + 1);
+    if (tag->message == NULL)
+      return GIT_ENOMEM;
 
-	memcpy(tag->message, buffer, text_len);
-	tag->message[text_len] = '\0';
+    memcpy(tag->message, buffer, text_len);
+    tag->message[text_len] = '\0';
+  }
 
 	return GIT_SUCCESS;
 }
